@@ -9,7 +9,7 @@ public class TreeNode{
     private TreeNode parent = null;
 
     public TreeNode(String data) {
-        this.data = data;
+        this.data = data.toLowerCase();
         this.setParent(this);
     }
 
@@ -19,7 +19,7 @@ public class TreeNode{
     }
 
     public void addChild(String data) {
-        TreeNode newChild = new TreeNode(data);
+        TreeNode newChild = new TreeNode(data.toLowerCase());
         this.addChild(newChild);
     }
 
@@ -39,7 +39,7 @@ public class TreeNode{
     }
 
     public void setData(String data) {
-        this.data = data;
+        this.data = data.toLowerCase();
     }
 
     public void setParent(TreeNode parent) {
@@ -52,11 +52,24 @@ public class TreeNode{
 
 
     public static TreeNode findNode(TreeNode n, String s) {
-        if (n.data.equals(s)) {
+        if (n.data.equals(s.toLowerCase())) {
             return n;
         } else {
             for (TreeNode child: n.getChildren()) {
                 TreeNode result = findNode(child, s);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+    public TreeNode findNodeTest(TreeNode n, String s) {
+        if (n.data.equals(s.toLowerCase())) {
+            return n;
+        } else {
+            for (TreeNode child: n.getChildren()) {
+                TreeNode result = findNodeTest(child, s);
                 if (result != null) {
                     return result;
                 }

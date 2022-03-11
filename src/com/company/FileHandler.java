@@ -5,121 +5,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileHandler {
-    static int resetList = 0;
-    static int resetListTest = 1;
-    static int numberOfSets = 0;
-    static List<Integer> listOfbunches = new ArrayList<>();
-    static int totalCount = 0;
+    static boolean trainBool = false;
 
-    public static List<List<String>> trainFromFile(String fileName,int part) throws IOException {
-        /*
-            If the place of ther number read from file is odd number then it is used for training, if even it is used for testing
-         */
+    static List<List<String>> training = new ArrayList<>();
+    static List<List<String>> testing = new ArrayList<>();
+
+    public static void readFromFile(String fileName,int part) throws IOException {
+
         List<String> dictionary = new ArrayList<>();
-        List<List<String>> training = new ArrayList<>();
+//        List<List<String>> training = new ArrayList<>();
 
-        File file = new File("C:\\Users\\Perdorues\\Desktop\\DigitSapiensTask\\src\\com\\company\\"+fileName);
+        File file = new File("C:\\Users\\User.WINDOWS-VCRGH5N\\Desktop\\digitSapiensTask\\src\\com\\company\\"+fileName);
 
-        BufferedReader br
-                = new BufferedReader(new FileReader(file));
+        BufferedReader br = new BufferedReader(new FileReader(file));
 
-        String st;
-
-        int count  = 0;
-        while ((st = br.readLine()) != null){
-            if(changeCursor(true,part,fileName) > count){
-                count++;
-                continue;
-            }
-            if(count != 0){
-                if(!checkIfNumber(st)){
-                        dictionary.add(st);
-
-                }
-            }else{
-                numberOfSets = Integer.parseInt(st);
-            }
-            count++;
-        }
-        if(dictionary.size() > 0)
-        {
-            training.add(dictionary);
-            return training;
-        }
-        return null;
-    }
-
-
-    public static List<List<String>> testFromFile(String fileName,int part) throws IOException {
-        /*
-            If the place of ther number read from file is odd number then it is used for training, if even it is used for testing
-         */
-        List<String> dictionary = new ArrayList<>();
-        List<List<String>> testing = new ArrayList<>();
-
-        File file = new File("C:\\Users\\Perdorues\\Desktop\\DigitSapiensTask\\src\\com\\company\\"+fileName);
-
-        BufferedReader br
-                = new BufferedReader(new FileReader(file));
-
-        String st;
-
-        int count  = 0;
-        totalCount = 0;
-        while ((st = br.readLine()) != null){
-            if(changeCursor(false,part,fileName) > count){
-                count++;
-                continue;
-            }
-            if(count != 0){
-                if(!checkIfNumber(st)){
-                        dictionary.add(st);
-                } else{
-                   listOfbunches.add(Integer.parseInt(st));
-                }
-            }
-            count++;
-        }
-        if(dictionary.size() > 0)
-        {
-            testing.add(dictionary);
-            return testing;
-        }
-        return null;
-    }
-
-    public static int changeCursor(boolean train,int part,String fileName) throws IOException {
-        int sets = 0;
-        List<Integer> afterSets = new ArrayList<>();
-        File file = new File("C:\\Users\\Perdorues\\Desktop\\DigitSapiensTask\\src\\com\\company\\"+fileName);
-
-        BufferedReader br
-                = new BufferedReader(new FileReader(file));
 
         String st;
         int count  = 0;
         while ((st = br.readLine()) != null){
             if(count != 0){
+//                if(!checkIfNumber(st) && trainBool == true){
+//                        dictionary.add(st);
+//                }else
                 if(checkIfNumber(st)){
-                    afterSets.add(Integer.parseInt(st));
+                    if(dictionary.size() > 0 && trainBool){
+                        training.add(dictionary);
+                    }else if(dictionary.size() > 0 && !trainBool){
+                        testing.add(dictionary);
+                    }
+                    dictionary = new ArrayList<>();
+                    trainBool = !trainBool;
+
                 }
-            }else{
-                sets = Integer.parseInt(st);
+                if(!checkIfNumber(st)){
+                    dictionary.add(st);
+                }
             }
             count++;
         }
-        int sum = 1;
-        if(train){
-            for(int i = 0;i < part;i++){
-                sum+= afterSets.get(i);
-            }
-        }else{
-            for(int i = 0;i <= part;i++){
-                sum+= afterSets.get(i);
-            }
+        if(dictionary.size() > 0 && !trainBool){
+            testing.add(dictionary);
         }
-        System.out.println("---: " + sum);
-        return sum;
     }
 
     public static  boolean checkIfNumber(String s){
